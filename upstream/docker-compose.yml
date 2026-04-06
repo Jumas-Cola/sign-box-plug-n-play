@@ -1,0 +1,16 @@
+services:
+  sing-box-upstream:
+    image: ghcr.io/sagernet/sing-box
+    container_name: sing-box-upstream
+    restart: always
+    command: run -c /etc/sing-box/config.json
+    ports:
+      - "13336:13336/tcp"
+    volumes:
+      - ./config.json:/etc/sing-box/config.json:ro
+    networks:
+      - sing_box_net
+
+networks:
+  sing_box_net:
+    driver: bridge
