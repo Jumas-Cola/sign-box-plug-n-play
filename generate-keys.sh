@@ -5,11 +5,13 @@ PORT=13336
 
 read -p "Введите IP-адрес Upstream сервера: " UPSTREAM_IP
 
-echo "Генерация UUID и ключей Reality..."
-GENERATED=$(docker run --rm ghcr.io/sagernet/sing-box sh -c 'sing-box generate uuid; sing-box generate reality-keypair')
-UPSTREAM_UUID=$(echo "$GENERATED" | head -1)
-UPSTREAM_PRIVATE=$(echo "$GENERATED" | grep "PrivateKey:" | awk '{print $2}')
-UPSTREAM_PUBLIC=$(echo "$GENERATED" | grep "PublicKey:" | awk '{print $2}')
+echo "Генерация UUID..."
+UPSTREAM_UUID=$(docker run --rm ghcr.io/sagernet/sing-box generate uuid)
+
+echo "Генерация ключей Reality..."
+UPSTREAM_KEYS=$(docker run --rm ghcr.io/sagernet/sing-box generate reality-keypair)
+UPSTREAM_PRIVATE=$(echo "$UPSTREAM_KEYS" | grep "PrivateKey:" | awk '{print $2}')
+UPSTREAM_PUBLIC=$(echo "$UPSTREAM_KEYS" | grep "PublicKey:" | awk '{print $2}')
 
 echo "Генерация Short ID..."
 UPSTREAM_SHORT_ID=$(openssl rand -hex 8)
