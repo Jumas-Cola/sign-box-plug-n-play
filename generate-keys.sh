@@ -54,6 +54,7 @@ cat > client-config.json <<EOF
     "rules": [
       {
         "rule_set": "geosite-category-ru",
+        "action": "route",
         "server": "dns-local"
       }
     ],
@@ -100,6 +101,7 @@ cat > client-config.json <<EOF
     }
   ],
   "route": {
+    "final": "proxy",
     "auto_detect_interface": true,
     "default_domain_resolver": {
       "server": "dns-remote"
@@ -107,6 +109,7 @@ cat > client-config.json <<EOF
     "rules": [
       {
         "rule_set": ["geoip-ru", "geosite-category-ru"],
+        "action": "route",
         "outbound": "direct"
       }
     ],
@@ -126,6 +129,11 @@ cat > client-config.json <<EOF
         "download_detour": "direct"
       }
     ]
+  },
+  "experimental": {
+    "cache_file": {
+      "enabled": true
+    }
   }
 }
 EOF
