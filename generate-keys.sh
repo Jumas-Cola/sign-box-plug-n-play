@@ -44,34 +44,20 @@ cat > client-config.json <<EOF
         "tag": "dns-remote",
         "type": "tls",
         "server": "8.8.8.8",
-        "detour": "proxy"
+        "detour": "direct"
       },
       {
         "tag": "dns-local",
-        "type": "local",
-        "detour": "direct"
+        "type": "local"
       }
     ],
     "rules": [
       {
-        "inbound": "tun-in",
-        "server": "dns-remote"
-      },
-      {
-        "domain": [
-          "vk.ru",
-          "m.vk.ru",
-          "mail.ru",
-          "www.tinkoff.ru",
-          "www.ozon.ru",
-          "www.wildberries.ru",
-          "gosuslugi.ru",
-          "www.mos.ru"
-        ],
-        "server": "dns-remote"
+        "rule_set": "geosite-category-ru",
+        "server": "dns-local"
       }
     ],
-    "final": "dns-local",
+    "final": "dns-remote",
     "strategy": "prefer_ipv4"
   },
   "inbounds": [
@@ -111,7 +97,32 @@ cat > client-config.json <<EOF
     }
   ],
   "route": {
-    "auto_detect_interface": true
+    "auto_detect_interface": true,
+    "default_domain_resolver": {
+      "server": "dns-remote"
+    },
+    "rules": [
+      {
+        "rule_set": ["geoip-ru", "geosite-category-ru"],
+        "outbound": "direct"
+      }
+    ],
+    "rule_set": [
+      {
+        "tag": "geoip-ru",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geoip/rule-set/geoip-ru.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "geosite-category-ru",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-category-ru.srs",
+        "download_detour": "direct"
+      }
+    ]
   }
 }
 EOF
