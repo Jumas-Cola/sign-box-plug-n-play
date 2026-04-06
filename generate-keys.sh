@@ -93,7 +93,10 @@ cat > client-config.json <<EOF
     },
     {
       "type": "direct",
-      "tag": "direct"
+      "tag": "direct",
+      "domain_resolver": {
+        "server": "dns-local"
+      }
     }
   ],
   "route": {
