@@ -41,10 +41,37 @@ cat > client-config.json <<EOF
   "dns": {
     "servers": [
       {
-        "tag": "dns-google",
-        "address": "tls://8.8.8.8"
+        "tag": "dns-remote",
+        "address": "tls://8.8.8.8",
+        "detour": "proxy"
+      },
+      {
+        "tag": "dns-local",
+        "address": "local",
+        "detour": "direct"
       }
-    ]
+    ],
+    "rules": [
+      {
+        "outbound": "any",
+        "server": "dns-local"
+      },
+      {
+        "domain": [
+          "vk.ru",
+          "m.vk.ru",
+          "mail.ru",
+          "www.tinkoff.ru",
+          "www.ozon.ru",
+          "www.wildberries.ru",
+          "gosuslugi.ru",
+          "www.mos.ru"
+        ],
+        "server": "dns-remote"
+      }
+    ],
+    "final": "dns-remote",
+    "strategy": "prefer_ipv4"
   },
   "inbounds": [
     {
