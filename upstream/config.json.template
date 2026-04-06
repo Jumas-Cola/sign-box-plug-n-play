@@ -1,14 +1,21 @@
 {
   "log": {
-    "level": "info",
-    "timestamp": true
+    "disabled": true
+  },
+  "dns": {
+    "servers": [
+      {
+        "tag": "dns-local",
+        "type": "local"
+      }
+    ]
   },
   "inbounds": [
     {
       "type": "vless",
       "tag": "vless-in",
       "listen": "::",
-      "listen_port": 13336,
+      "listen_port": UPSTREAM-PORT,
       "users": [
         {
           "uuid": "UPSTREAM-UUID",
@@ -26,7 +33,6 @@
           },
           "private_key": "UPSTREAM-PRIVATE-KEY",
           "short_id": [
-            "",
             "0123456789abcdef"
           ]
         }
@@ -36,11 +42,11 @@
   "outbounds": [
     {
       "type": "direct",
-      "tag": "direct-out"
-    },
-    {
-      "type": "block",
-      "tag": "block-out"
+      "tag": "direct-out",
+      "domain_resolver": "dns-local"
     }
-  ]
+  ],
+  "route": {
+    "default_domain_resolver": "dns-local"
+  }
 }

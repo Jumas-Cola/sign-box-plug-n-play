@@ -10,8 +10,9 @@ UPSTREAM_UUID=$(docker run --rm ghcr.io/sagernet/sing-box generate uuid)
 
 echo "Генерация ключей Reality..."
 UPSTREAM_KEYS=$(docker run --rm ghcr.io/sagernet/sing-box generate reality-keypair)
-UPSTREAM_PRIVATE=$(echo "$UPSTREAM_KEYS" | grep "PrivateKey:" | awk '{print $2}')
-UPSTREAM_PUBLIC=$(echo "$UPSTREAM_KEYS" | grep "PublicKey:" | awk '{print $2}')
+read UPSTREAM_PRIVATE UPSTREAM_PUBLIC < <(
+  awk '/PrivateKey:/{priv=$2} /PublicKey:/{pub=$2} END{print priv, pub}' <<< "$UPSTREAM_KEYS"
+)
 
 echo "Генерация Short ID..."
 UPSTREAM_SHORT_ID=$(openssl rand -hex 8)
@@ -29,14 +30,14 @@ sed \
   -e "s/UPSTREAM-UUID/$UPSTREAM_UUID/g" \
   -e "s/UPSTREAM-PRIVATE-KEY/$UPSTREAM_PRIVATE/g" \
   -e "s/0123456789abcdef/$UPSTREAM_SHORT_ID/g" \
+  -e "s/UPSTREAM-PORT/$PORT/g" \
   upstream/config.json.template > upstream/config.json
 
 # Клиентский конфиг для импорта в sing-box
 cat > client-config.json <<EOF
 {
   "log": {
-    "level": "info",
-    "timestamp": true
+    "disabled": true
   },
   "dns": {
     "servers": [
@@ -95,17 +96,13 @@ cat > client-config.json <<EOF
     {
       "type": "direct",
       "tag": "direct",
-      "domain_resolver": {
-        "server": "dns-local"
-      }
+      "domain_resolver": "dns-local"
     }
   ],
   "route": {
     "final": "proxy",
     "auto_detect_interface": true,
-    "default_domain_resolver": {
-      "server": "dns-remote"
-    },
+    "default_domain_resolver": "dns-remote",
     "rules": [
       {
         "action": "sniff"
