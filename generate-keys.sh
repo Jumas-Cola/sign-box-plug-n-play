@@ -108,6 +108,13 @@ cat > client-config.json <<EOF
     },
     "rules": [
       {
+        "action": "sniff"
+      },
+      {
+        "protocol": "dns",
+        "action": "hijack-dns"
+      },
+      {
         "rule_set": ["geoip-ru", "geosite-category-ru"],
         "action": "route",
         "outbound": "direct"
