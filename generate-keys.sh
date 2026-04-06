@@ -53,8 +53,8 @@ cat > client-config.json <<EOF
     ],
     "rules": [
       {
-        "outbound": "any",
-        "server": "dns-local"
+        "inbound": "tun-in",
+        "server": "dns-remote"
       },
       {
         "domain": [
@@ -70,7 +70,7 @@ cat > client-config.json <<EOF
         "server": "dns-remote"
       }
     ],
-    "final": "dns-remote",
+    "final": "dns-local",
     "strategy": "prefer_ipv4"
   },
   "inbounds": [
